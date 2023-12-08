@@ -6,7 +6,7 @@ class TunnelBase(BaseModel):
     child_blocks: Optional[List[str]] = []
 
 
-class TunnelCreate(BaseModel):
+class TunnelCreate(TunnelBase):
     pass
 
 
@@ -15,14 +15,20 @@ class TunnelRead(BaseModel):
     child_blocks: List[object] = None
 
 
-class BlockBase(BaseModel):
+class TunnelDelete(BaseModel):
+    id: str
+
+
+class BlockCreate(BaseModel):
     name: str
     type: str
 
 
-class BlockCreate(BlockBase):
-    pass
+class BlockRead(BaseModel):
+    id: str
+    name: Optional[str] = None
+    type: Optional[str] = None
 
 
-class BlockRead(BlockBase):
+class BlockDelete(BaseModel):
     id: str

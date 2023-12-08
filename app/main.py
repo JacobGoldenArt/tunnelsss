@@ -1,76 +1,53 @@
-from app.tunnel.tunnel_base import Tunnel
-from app.blocks.test_block import TestBlock
-from rich import print
-import asyncio
+import subprocess
+from contextlib import asynccontextmanager
 
-import sys
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 
-from loguru import logger
+from app.config import Settings
+from app.routes import router
 
-logger.add(sys.stderr, format="{time} {level} {message}", level="ERROR")
-
-
-# Create a new tunnel
-# tunnel = tunnel_ops.newTunnel("WTF")
-
-# testBlock1 = {
-#     "type": "TestBlock",
-#     "name": "aBlock1",
-# }
-
-# testBlock2 = {
-#     "type": "TestBlock",
-#     "name": "bBlock2",
-# }
-
-# testBlock3 = {
-#     "type": "TestBlock",
-#     "name": "cBlock3",
-# }
-
-# # Create new blocks
-# testBlock1_id = block_ops.newBlock(TestBlock(**testBlock1))
-# testBlock2_id = block_ops.newBlock(TestBlock(**testBlock2))
-# testBlock3_id = block_ops.newBlock(TestBlock(**testBlock3))
-
-# # Retrieve blocks from the database
-# testBlock1 = block_ops.retrieveBlock(testBlock1_id)
-# testBlock2 = block_ops.retrieveBlock(testBlock2_id)
-# testBlock3 = block_ops.retrieveBlock(testBlock3_id)
-
-# # Get the tunnel object
-# tunnel = tunnel_ops.getTunnel(tunnel_id)
-
-# # Add blocks to the tunnel
-# tunnel_ops.addBlockToTunnel(tunnel_id, testBlock1_id)
-# tunnel_ops.addBlockToTunnel(tunnel_id, testBlock2_id)
-# tunnel_ops.addBlockToTunnel(tunnel_id, testBlock3_id)
-
-# # Make connections between blocks
-# tunnel.connect_blocks(testBlock1.name, testBlock2.name)
-# tunnel.connect_blocks(testBlock2.name, testBlock3.name)
-
-# # Save the tunnel to the database
-# # tunnel_ops.editTunnel(tunnel_id, tunnel.name)
-
-# # Create a new event loop
-# loop = asyncio.new_event_loop()
-
-# # Set the new event loop as the current event loop
-# asyncio.set_event_loop(loop)
+settings = Settings()
 
 
-# async def main():
-#     # Use asyncio.ensure_future to run the coroutine
-#     # and return a Future representing the result of the function
-#     future = asyncio.ensure_future(
-#         tunnel_ops.runTunnel(tunnel_id, "Hello Test Blocks!")
-#     )
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Context manager for FastAPI app. It will run all code before `yield`
+    on app startup, and will run code after `yeld` on app shutdown.
+    """
 
-#     # Await the Future to get the result of the function
-#     result = await future
-#     print(result)
+    try:
+        subprocess.run(
+            [
+                "tailwindcss",
+                "-i",
+                str(settings.STATIC_DIR / "src" / "tw.css"),
+                "-o",
+                str(settings.STATIC_DIR / "css" / "main.css"),
+            ]
+        )
+    except Exception as e:
+        print(f"Error running tailwindcss: {e}")
+
+    yield
 
 
-# # Run the main function until it completes
-# loop.run_until_complete(main())
+def get_app() -> FastAPI:
+    """Create a FastAPI app with the specified settings."""
+
+    app = FastAPI(lifespan=lifespan, **settings.fastapi_kwargs)
+
+    app.mount("/static", StaticFiles(directory=settings.STATIC_DIR), name="static")
+
+    app.include_router(router)
+
+    return app
+
+
+app = get_app()
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(app, host="127.0.0.1", port=8080)
