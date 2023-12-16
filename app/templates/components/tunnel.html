@@ -1,0 +1,20 @@
+<div id="pallete-content" class="grid-container">
+    <button hx-get="/tunnels/new" hx-target="#pallete" hx-push-url="true" type="button">New Tunnel</button>
+    {% if tunnels %}
+    {% for tunnel in tunnels %}
+    <div class="card">
+        <div class="content" hx-get="/tunnels/{{ tunnel.id }}" hx-target="#pallete" hx-push-url="true">
+            <span class="material-symbols-outlined">
+                account_tree
+            </span>
+            <span class="text-block">
+                <h6 class="block-name">{{ tunnel.name }}</h6>
+                <p class="block-description">{{ tunnel.description }}</p>
+            </span>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <h3>No Tunnels Found</h3>
+    {% endif %}
+</div>

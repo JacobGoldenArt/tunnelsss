@@ -1,0 +1,21 @@
+<div id="pallete-content" class="grid-container">
+    <button hx-get="/blocks/new" hx-target="#pallete" hx-push-url="true" type="button">New Block</button>
+    {% if blocks %}
+    {% for block in blocks %}
+    <div class="card" hx-get="/blocks/edit/{{ block.id }}" hx-target="#pallete" hx-push-url="true">
+        <div class="content" data-id="{{ block.id }}" data-tunnel-id="{{ block.tunnel_id }}">
+            <span class="material-symbols-outlined">
+                toast
+            </span>
+            <span class="text-block">
+                <h6 class="block-name">{{ block.name }}</h6>
+                <p class="block-type">{{ block.type }}</p>
+                <p class="block-description">{{ block.description }}</p>
+            </span>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <h3>No Blocks Found</h3>
+    {% endif %}
+</div>

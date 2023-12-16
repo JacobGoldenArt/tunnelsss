@@ -1,0 +1,25 @@
+{% if tunnel %}
+<div id="pallete-content" class="grid-container">
+    <h3>{{ tunnel[0].result[0].name }}</h3>
+    <button hx-get="/blocks/new" hx-target="#pallete" hx-push-url="true" type="button">New Block</button>
+    {% if tunnel.child_blocks %}
+    {% for block in tunnel.child_blocks %}
+    <div class="card" hx-get="/blocks/edit/{{ block.id }}" hx-target="#pallete" hx-push-url="true">
+        <div class="content" data-id="{{ block.id }}" data-tunnel-id="{{ block.tunnel_id }}">
+            <span class="material-symbols-outlined">
+                toast
+            </span>
+            <span class="text-block">
+                <h6 class="block-name">{{ block.name }}</h6>
+                <p class="block-type">{{ block.type }}</p>
+                <p class="block-description">{{ block.description }}</p>
+            </span>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <h3>No Blocks Found</h3>
+    {% endif %}
+
+</div>
+{% endif %}

@@ -24,19 +24,44 @@ class TunnelOps:
         """
         async with Surreal(cls.db_url) as db:
             await db.use(cls.db_ns, cls.db_dbt)
-            make_tunnel: str = "tunnels:main"
-            await db.create(make_tunnel, create)
-            results = await db.select(make_tunnel)
+
+            await db.query(
+                """
+                LET $myID = rand::uuid();
+                CREATE tunnels SET name = $my_tunnel.name, 
+                description = $my_tunnel.description,
+                child_blocks = [],
+                id = $myID;
+                """,
+                {"my_tunnel": create},
+            )
+
+            results = await db.select("tunnels")
             return results
 
     @classmethod
-    async def read(cls, read: TunnelRead):
+    async def reads(cls, read: TunnelRead):
+        """
+        Route to read all Tunnel in the database.
+        """
+        async with Surreal(cls.db_url) as db:
+            await db.use(cls.db_ns, cls.db_dbt)
+            results = await db.select("tunnels")
+            return results
+
+    @classmethod
+    async def read(cls, id: str):
         """
         Route to read a Tunnel in the database.
         """
         async with Surreal(cls.db_url) as db:
             await db.use(cls.db_ns, cls.db_dbt)
-            results = await db.select("tunnels:main")
+            results = await db.query(
+                """
+                SELECT * FROM $id;
+            """,
+                {"id": id},
+            )
             return results
 
     @classmethod
@@ -68,9 +93,13 @@ class BlockOps:
             await db.query(
                 """
                 LET $myID = rand::uuid();
-                CREATE blocks SET name = $myblock.name, type = $myblock.type, id = $myID;
+                CREATE blocks SET name = $myblock.name, 
+                type = $myblock.type, 
+                description = $myblock.description,
+                id = $myID,
+                tunnel_id = $myblock.tunnel_id;
         
-                UPDATE tunnels:main SET child_blocks = [RETURN (SELECT * from blocks)]
+                UPDATE $myblock.tunnel_id SET child_blocks = [RETURN (SELECT * from blocks)]
                 """,
                 {"myblock": create},
             )
@@ -96,7 +125,7 @@ class BlockOps:
             await db.use(cls.db_ns, cls.db_dbt)
             results = await db.query(
                 """
-                SELECT * FROM $id;
+                SELECT name,type,description FROM $id;
             """,
                 {"id": id},
             )

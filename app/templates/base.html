@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="jgdark">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>{{ page_title }}</title>
+    <meta name="description" content="{{ page_description }}" />
+    <script src="{{ url_for('static', path='js/htmx-min.js') }}"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="{{ url_for('static', path='css/main.css') }}">
+
+</head>
+
+<body>
+    <div id="left-panel" class="start-0 bottom-0 d-flex flex-column flex-shrink-0">
+        {% block nav %}
+        {% include '/shared/_nav.html' %}
+        {% endblock %}
+    </div>
+
+    <main class="page-layout d-flex flex-nowrap">
+        <section id="pallete" class="col2">
+
+
+            {% include '/views/home-view.html' %}
+
+            <!-- pallete content dynamically loaded -->
+
+
+
+        </section>
+
+        <section id="right-panel" class="col3">
+            <span class="material-symbols-outlined menu">menu_open</span>
+
+
+        </section>
+    </main>
+</body>
+
+</html>

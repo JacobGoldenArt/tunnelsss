@@ -1,0 +1,20 @@
+<div id="pallete-content" class="grid-container form-view">
+    <form action="/tunnels/create" hx-boost="true" hx-target="#pallete" method="post" class="card">
+        <h3>Tunnel!</h3>
+        <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" name="name" class="form-control" id="name">
+        </div>
+
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" id="description" rows="5" name="description"></textarea>
+        </div>
+
+        <div class="mb-3">
+
+            <button type="submit" class="btn">Save Tunnel</button>
+
+        </div>
+    </form>
+</div>

@@ -1,0 +1,38 @@
+<div id="pallete-content" class="grid-container form-view">
+    <form action="/blocks/create" hx-boost="true" hx-target="#pallete" method="post" class="card">
+        <h3>Block</h3>
+        <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" value="">
+        </div>
+        <div class="mb-3">
+            <label for="blocktype" class="form-label">Block Type</label>
+            <select class="form-select">
+                <option selected>...</option>
+                <option value="1">Emot</option>
+                <option value="2">Surreal</option>
+                <option value="3">Simplify</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="model" class="form-label">Model</label>
+            <select class="form-control form-select">
+                <option selected>...</option>
+                <option value="1">GPT-4-Turbo</option>
+                <option value="2">GPT-3.5-Turbo</option>
+                <option value="3">Simplify</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" id="description" rows="5"></textarea>
+        </div>
+
+        <div class="mb-3">
+
+            <button type="submit" class="btn">Save Tunnel</button>
+
+        </div>
+    </form>
+</div>
